@@ -1,0 +1,13 @@
+body {
+  background: linear-gradient(to right, #5f43ad, #7430e2);
+
+  @media (max-width: 1199px) {
+    .MuiContainer-root {
+      margin-top: 2em;
+      display: 'flex';
+      justify-content: center;
+      align-items: center;
+      max-width: 90%;
+    }
+  }
+}
