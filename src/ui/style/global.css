@@ -1,6 +1,6 @@
 body {
   background: linear-gradient(to right, #5f43ad, #7430e2);
-
+  /* background: 'black'; */
   @media (max-width: 1199px) {
     .MuiContainer-root {
       margin-top: 2em;

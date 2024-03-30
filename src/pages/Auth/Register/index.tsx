@@ -79,7 +79,7 @@ export const Register = () => {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: '100vh', paddingTop: '2em' }}
+      sx={{ height: '100%', paddingTop: '2em' }}
     >
       {showVerifyCode == false ? (
         <FormControl
@@ -167,7 +167,18 @@ export const Register = () => {
               label="Enable 2FA"
             />
 
-            <Button type="submit">Submit</Button>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}
+            >
+              <div>
+                <Button type="submit">Submit</Button>
+              </div>
+              <Button onClick={() => navigate('/login')}>Login</Button>
+            </div>
           </form>
         </FormControl>
       ) : (
