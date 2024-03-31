@@ -30,6 +30,9 @@ export const Validation = ({
         if (sub) {
           setResponseMessage('Success: User created and verified');
           setTimeout(() => {
+            if (!localStorage.getItem('authenticated')) {
+              localStorage.setItem('authenticated', sub);
+            }
             navigate('/');
           }, 3000);
         } else {

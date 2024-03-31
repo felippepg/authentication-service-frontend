@@ -83,7 +83,7 @@ export const Login = () => {
         const { sub } = jwtDecode(token);
         if (sub) {
           navigate('/');
-          //auntenticar
+          localStorage.setItem('authenticated', sub);
         } else {
           setResponseMessage('Error: Invalid token');
         }
