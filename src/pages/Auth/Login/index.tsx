@@ -6,10 +6,10 @@ import {
   Grid,
   TextField,
 } from '@mui/material';
-import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../../services/api';
+import { login } from '../../../services/login';
+import { verifyCode } from '../../../services/verifyCode';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -29,40 +29,16 @@ export const Login = () => {
       }, 4000);
       return;
     }
-    try {
-      const request = await api.post('/auth/login', {
-        email,
-        password,
-      });
+    const response = await login(email, password);
 
-      const response = await request.data;
-      if (response.mfaEnabled == false) {
-        setShowVerifyCode(false);
-        if (response.hasOwnProperty('token')) {
-          const { token } = response;
-          const { sub } = jwtDecode(token);
-          if (sub) {
-            localStorage.setItem('authenticated', sub);
-            navigate('/');
-          } else {
-            setResponseMessage('Error: Invalid token');
-          }
-        } else {
-          setResponseMessage('Error: User not valid');
-        }
-      }
+    if (response.message != '') {
+      setResponseMessage(response.message);
+    }
+
+    if (response.verifyCode == true) {
       setShowVerifyCode(true);
-    } catch (error: any) {
-      if (error.hasOwnProperty('response')) {
-        console.log(error);
-        if (error.response.data != '') {
-          setResponseMessage(error.response.data);
-        } else {
-          setResponseMessage(error.message);
-        }
-      } else {
-        setResponseMessage(error.message);
-      }
+    } else {
+      setShowVerifyCode(false);
     }
 
     setTimeout(() => {
@@ -74,32 +50,13 @@ export const Login = () => {
     e
   ) => {
     e.preventDefault();
-    try {
-      const request = await api.post('/auth/verify', {
-        code,
-        email,
-      });
 
-      const response = await request.data;
-      if (response.hasOwnProperty('token')) {
-        const { token } = response;
-        const { sub } = jwtDecode(token);
-        if (sub) {
-          navigate('/');
-          localStorage.setItem('authenticated', sub);
-        } else {
-          setResponseMessage('Error: Invalid token');
-        }
-      } else {
-        setResponseMessage('Error: User not valid');
-      }
-    } catch (error: any) {
-      if (error.hasOwnProperty('response')) {
-        setResponseMessage(error.response.data);
-      } else {
-        setResponseMessage(error.message);
-      }
+    const response = await verifyCode(code, email);
+
+    if (response.message != '') {
+      setResponseMessage(response.message);
     }
+
     setTimeout(() => {
       setResponseMessage('');
     }, 4000);
