@@ -7,7 +7,7 @@ import {
   TextField,
 } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../../services/api';
 
@@ -18,16 +18,6 @@ export const Login = () => {
   const [password, setPassword] = useState<string>('');
   const [responseMessage, setResponseMessage] = useState<string>('');
   const [showVerifyCode, setShowVerifyCode] = useState(false);
-
-  useEffect(() => {
-    const connect = async () => {
-      const request = await api.get('/demo');
-      const response = await request.data;
-      console.log(response);
-    };
-
-    connect();
-  }, []);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -64,7 +54,12 @@ export const Login = () => {
       setShowVerifyCode(true);
     } catch (error: any) {
       if (error.hasOwnProperty('response')) {
-        setResponseMessage(error.response.data);
+        console.log(error);
+        if (error.response.data != '') {
+          setResponseMessage(error.response.data);
+        } else {
+          setResponseMessage(error.message);
+        }
       } else {
         setResponseMessage(error.message);
       }
