@@ -7,10 +7,10 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../../services/api';
+import { register } from '../../../services/register';
+import { verifyToken } from '../../../services/verifyToken';
 import { Validation } from './Validation';
 
 export const Register = () => {
@@ -59,45 +59,26 @@ export const Register = () => {
       return;
     }
 
-    try {
-      const request = await api.post('/auth/register', {
-        firstname,
-        lastname,
-        email,
-        password,
-        mfaEnabled,
-      });
-      const response = await request.data;
+    //registrar usuário
+    const response = await register(
+      firstname,
+      lastname,
+      email,
+      password,
+      mfaEnabled
+    );
 
-      if (mfaEnabled) {
-        setShowVerifyCode(true);
-        setImageURI(response.secretImageUri);
-      } else {
-        const response = await request.data;
-        if (response.hasOwnProperty('token')) {
-          const { token } = response;
-          const { sub } = jwtDecode(token);
-          if (sub) {
-            setResponseMessage('Success: User created');
-            setTimeout(() => {
-              localStorage.setItem('authenticated', sub);
-              navigate('/');
-            }, 3000);
-          } else {
-            setResponseMessage('Error: Invalid token');
-          }
-        } else {
-          setResponseMessage('Error: User not valid');
-        }
+    if (mfaEnabled) {
+      setShowVerifyCode(true);
+      setImageURI(response.data.secretImageUri);
+    } else {
+      const verify = await verifyToken(response.data);
+      setResponseMessage(verify.message);
+      if (verify.success == true && verify.sub != null) {
         setTimeout(() => {
+          localStorage.setItem('authenticated', verify.sub);
           navigate('/');
         }, 3000);
-      }
-    } catch (error: any) {
-      if (error.hasOwnProperty('response')) {
-        setResponseMessage(error.response.data);
-      } else {
-        setResponseMessage(error.message);
       }
     }
 

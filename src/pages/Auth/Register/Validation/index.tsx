@@ -1,8 +1,6 @@
 import { Alert, Box, Button, Grid, TextField } from '@mui/material';
-import { jwtDecode } from 'jwt-decode';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../../../../services/api';
+import { verifyCode } from '../../../../services/verifyCode';
 
 export const Validation = ({
   uriImage,
@@ -11,43 +9,53 @@ export const Validation = ({
   uriImage: string;
   email: string;
 }) => {
-  const navigate = useNavigate();
   const [code, setCode] = useState<string>('');
   const [responseMessage, setResponseMessage] = useState('');
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    try {
-      const request = await api.post('/auth/verify', {
-        code,
-        email,
-      });
 
-      const response = await request.data;
-      if (response.hasOwnProperty('token')) {
-        const { token } = response;
-        const { sub } = jwtDecode(token);
-        if (sub) {
-          setResponseMessage('Success: User created and verified');
-          setTimeout(() => {
-            if (!localStorage.getItem('authenticated')) {
-              localStorage.setItem('authenticated', sub);
-            }
-            navigate('/');
-          }, 3000);
-        } else {
-          setResponseMessage('Error: Invalid Token');
-        }
-      } else {
-        setResponseMessage('Error: User not valid');
-      }
-    } catch (error: any) {
-      if (error.hasOwnProperty('response')) {
-        setResponseMessage(error.response.data);
-      } else {
-        setResponseMessage(error.message);
-      }
+    const response = await verifyCode(code, email);
+
+    if (response.message != '') {
+      setResponseMessage(response.message);
     }
+
+    setTimeout(() => {
+      setResponseMessage('');
+    }, 4000);
+
+    // try {
+    //   const request = await api.post('/auth/verify', {
+    //     code,
+    //     email,
+    //   });
+
+    //   const response = await request.data;
+    //   if (response.hasOwnProperty('token')) {
+    //     const { token } = response;
+    //     const { sub } = jwtDecode(token);
+    //     if (sub) {
+    //       setResponseMessage('Success: User created and verified');
+    //       setTimeout(() => {
+    //         if (!localStorage.getItem('authenticated')) {
+    //           localStorage.setItem('authenticated', sub);
+    //         }
+    //         navigate('/');
+    //       }, 3000);
+    //     } else {
+    //       setResponseMessage('Error: Invalid Token');
+    //     }
+    //   } else {
+    //     setResponseMessage('Error: User not valid');
+    //   }
+    // } catch (error: any) {
+    //   if (error.hasOwnProperty('response')) {
+    //     setResponseMessage(error.response.data);
+    //   } else {
+    //     setResponseMessage(error.message);
+    //   }
+    // }
   };
 
   return (
