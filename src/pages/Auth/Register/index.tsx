@@ -26,6 +26,39 @@ export const Register = () => {
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+
+    if (firstname.length < 3) {
+      setResponseMessage('Error: Firstname must have at least 3 characters');
+      setTimeout(() => {
+        setResponseMessage('');
+      }, 4000);
+      return;
+    }
+
+    if (lastname.length < 3) {
+      setResponseMessage('Error: Lastname must have at least 3 characters');
+      setTimeout(() => {
+        setResponseMessage('');
+      }, 4000);
+      return;
+    }
+
+    if (!email || !email.includes('@')) {
+      setResponseMessage('Error: Invalid email');
+      setTimeout(() => {
+        setResponseMessage('');
+      }, 4000);
+      return;
+    }
+
+    if (password.length < 8) {
+      setResponseMessage('Error: Password must have at least 8 characters');
+      setTimeout(() => {
+        setResponseMessage('');
+      }, 4000);
+      return;
+    }
+
     try {
       const request = await api.post('/auth/register', {
         firstname,
@@ -47,6 +80,7 @@ export const Register = () => {
           if (sub) {
             setResponseMessage('Success: User created');
             setTimeout(() => {
+              localStorage.setItem('authenticated', sub);
               navigate('/');
             }, 3000);
           } else {

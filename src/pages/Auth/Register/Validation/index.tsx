@@ -75,8 +75,12 @@ export const Validation = ({
       >
         <h2>To finish your account scan the QRCode Below</h2>
 
-        <div>
-          <img src={uriImage} alt="QRcode" />
+        <div style={{ width: '100%', height: '60%', maxWidth: '100%' }}>
+          <img
+            src={uriImage}
+            alt="QRcode"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
         </div>
 
         <form onSubmit={handleSubmit}>

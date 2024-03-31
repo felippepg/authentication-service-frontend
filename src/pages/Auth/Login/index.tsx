@@ -31,6 +31,14 @@ export const Login = () => {
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+
+    if (email.trim() === '' || password === '') {
+      setResponseMessage('Fields required');
+      setTimeout(() => {
+        setResponseMessage('');
+      }, 4000);
+      return;
+    }
     try {
       const request = await api.post('/auth/login', {
         email,
@@ -44,8 +52,8 @@ export const Login = () => {
           const { token } = response;
           const { sub } = jwtDecode(token);
           if (sub) {
+            localStorage.setItem('authenticated', sub);
             navigate('/');
-            //auntenticar
           } else {
             setResponseMessage('Error: Invalid token');
           }
