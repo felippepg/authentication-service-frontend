@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Este é um projeto de frontend em React que consiste em uma aplicação responsiva com três telas principais: login, registro de usuário e a tela inicial (home). A estilização da aplicação é feita utilizando o Material UI, proporcionando uma interface moderna e agradável.
+Este é um projeto em React que consiste em uma aplicação responsiva com três telas principais: login, registro de usuário e a tela inicial (home). A estilização da aplicação é feita utilizando o Material UI, proporcionando uma interface moderna e agradável.
 
 O diferencial desta aplicação é a implementação de um sistema de autenticação de dois fatores (2FA) durante o registro de usuário. Após preencher os dados básicos do usuário, é possível habilitar a autenticação de dois fatores. Nesse caso, um QR code é gerado, que pode ser escaneado por um aplicativo de autenticação para gerar um código numérico. Esse código numérico é então utilizado para finalizar a autenticação e registrar o usuário. 🔐📱
 
